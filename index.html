@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Applied Mathematics with F# — NDC Workshop Proposal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&family=Outfit:wght@300;400;500;600&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet"/>
+
+<style>
+:root{
+  --white:  #ffffff;
+  --off:    #fafaf7;
+  --pale:   #f2f0eb;
+  --coral:  #e8522a;
+  --coral2: #c43d18;
+  --indigo: #2d3a8c;
+  --indigo2:#1e2860;
+  --gold:   #c8960a;
+  --sage:   #4a7c6f;
+  --ink:    #1a1a1a;
+  --mid:    #5a5a5a;
+  --light:  #9a9a90;
+  --border: #e0ddd5;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--white);
+  color:var(--ink);
+  font-family:'Outfit',sans-serif;
+  font-size:16px;
+  overflow-x:hidden;
+}
+
+/* ═══════════════════════════════════
+   ZIG-ZAG SVG DIVIDER
+═══════════════════════════════════ */
+.zz{
+  width:100%;height:28px;display:block;
+  flex-shrink:0;
+}
+.zz-coral{ fill:var(--coral) }
+.zz-indigo{ fill:var(--indigo) }
+.zz-pale{ fill:var(--pale) }
+.zz-white{ fill:var(--white) }
+.zz-off{ fill:var(--off) }
+
+/* zigzag as section background stripe */
+.zz-band{
+  width:100%;overflow:hidden;line-height:0;
+}
+.zz-band svg{ display:block }
+
+/* ═══════════════════════════════════
+   NAV
+═══════════════════════════════════ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:900;
+  background:var(--white);
+  border-bottom:2px solid var(--ink);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:1rem 3.5rem;
+}
+.nav-logo{
+  font-family:'Playfair Display',serif;
+  font-size:1.1rem;font-weight:700;
+  letter-spacing:-.01em;color:var(--ink);
+}
+.nav-logo span{color:var(--coral)}
+.nav-links{display:flex;gap:2.5rem}
+.nav-links a{
+  font-size:.8rem;font-weight:500;letter-spacing:.06em;text-transform:uppercase;
+  text-decoration:none;color:var(--mid);transition:color .2s;
+}
+.nav-links a:hover{color:var(--coral)}
+.nav-pill{
+  font-size:.72rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  padding:.45rem 1.2rem;
+  background:var(--coral);color:var(--white);
+}
+
+/* ═══════════════════════════════════
+   HERO
+═══════════════════════════════════ */
+.hero{
+  padding-top:66px;
+  background:var(--white);
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  min-height:100vh;
+  position:relative;
+}
+
+/* zigzag repeating background on right panel */
+.hero-right{
+  background-color:var(--indigo);
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='24'%3E%3Cpolyline points='0,24 20,4 40,24 60,4 80,24' fill='none' stroke='rgba(255,255,255,0.07)' stroke-width='2'/%3E%3C/svg%3E");
+  background-repeat:repeat;
+  display:flex;flex-direction:column;
+  justify-content:space-between;
+  padding:4rem 3.5rem 0;
+  position:relative;overflow:hidden;
+}
+
+.hero-right::before{
+  content:'';
+  position:absolute;bottom:0;left:0;right:0;top:60%;
+  background:linear-gradient(to bottom, transparent, rgba(20,28,80,.7));
+  pointer-events:none;
+}
+
+.hero-left{
+  padding:4.5rem 4rem 4rem 4.5rem;
+  display:flex;flex-direction:column;
+  justify-content:center;
+  border-right:2px solid var(--ink);
+}
+
+.proposal-tag{
+  display:inline-flex;align-items:center;gap:.6rem;
+  font-size:.75rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--coral);margin-bottom:1.8rem;
+}
+.proposal-tag::before{
+  content:'';display:block;width:32px;height:2px;background:var(--coral);
+}
+
+h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(3.5rem,6vw,5.8rem);
+  font-weight:700;line-height:1.0;
+  letter-spacing:-.02em;
+  color:var(--ink);
+}
+h1 .italic{font-style:italic;color:var(--coral)}
+h1 .block{display:block}
+
+.hero-desc{
+  font-size:1.05rem;line-height:1.8;
+  color:var(--mid);margin:2rem 0 2.5rem;
+  max-width:46ch;font-weight:300;
+}
+
+.hero-pills{display:flex;flex-direction:column;gap:.6rem;margin-bottom:2.5rem}
+.hp{
+  font-size:.78rem;font-weight:500;
+  padding:.5rem 1rem;
+  border:1.5px solid var(--border);
+  color:var(--mid);
+  display:flex;align-items:center;gap:.7rem;
+}
+.hp::before{content:'';display:block;width:6px;height:6px;background:var(--border);flex-shrink:0}
+.hp.coral{border-color:var(--coral);color:var(--coral);background:rgba(232,82,42,.04)}
+.hp.coral::before{background:var(--coral)}
+.hp.indigo{border-color:var(--indigo);color:var(--indigo);background:rgba(45,58,140,.04)}
+.hp.indigo::before{background:var(--indigo)}
+
+.hero-cta{
+  display:inline-flex;align-items:center;gap:.7rem;
+  font-size:.82rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink);text-decoration:none;
+  border-bottom:2px solid var(--ink);padding-bottom:3px;
+  transition:color .2s,border-color .2s;width:fit-content;
+}
+.hero-cta:hover{color:var(--coral);border-color:var(--coral)}
+.hero-cta::after{content:'↓';font-size:1rem}
+
+/* RIGHT PANEL CONTENT */
+.hero-topics{
+  position:relative;z-index:2;
+  display:flex;flex-direction:column;gap:0;flex:1;
+  padding-bottom:1.5rem;
+}
+.ht-row{
+  display:flex;align-items:center;gap:.7rem;
+  padding:.7rem 0;
+  border-bottom:1px solid rgba(255,255,255,.1);
+}
+.ht-row:first-child{border-top:1px solid rgba(255,255,255,.1)}
+.ht-num{
+  font-size:.6rem;font-weight:600;letter-spacing:.1em;
+  color:rgba(255,255,255,.35);min-width:2rem;
+}
+.ht-name{
+  font-size:.88rem;font-weight:400;
+  color:rgba(255,255,255,.8);flex:1;
+}
+.ht-tags{display:flex;gap:.35rem;flex-wrap:wrap}
+.ht-tag{
+  font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;
+  padding:.18rem .5rem;
+  border:1px solid rgba(255,255,255,.15);
+  color:rgba(255,255,255,.45);
+}
+.ht-tag.hi{
+  border-color:rgba(232,82,42,.6);
+  color:rgba(255,160,120,.9);
+  background:rgba(232,82,42,.12);
+}
+
+/* book card at bottom of right panel */
+.hero-book-card{
+  position:relative;z-index:2;
+  background:var(--white);
+  display:flex;align-items:center;gap:1.8rem;
+  padding:1.8rem 2rem;
+  margin:0 -3.5rem;
+}
+.hero-book-card img{
+  width:90px;flex-shrink:0;
+  box-shadow:4px 8px 32px rgba(0,0,0,.25);
+  transition:transform .3s;
+}
+.hero-book-card img:hover{transform:scale(1.05) rotate(-1deg)}
+.hbc-text{}
+.hbc-eyebrow{
+  font-size:.65rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--coral);margin-bottom:.4rem;
+}
+.hbc-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.2rem;font-weight:700;font-style:italic;
+  color:var(--ink);line-height:1.2;margin-bottom:.4rem;
+}
+.hbc-pub{font-size:.7rem;color:var(--mid);margin-bottom:.5rem}
+.hbc-dots{display:flex;flex-direction:column;gap:.3rem}
+.hbc-dot{
+  font-size:.65rem;color:var(--mid);
+  display:flex;align-items:center;gap:.5rem;
+}
+.hbc-dot::before{content:'—';color:var(--coral);font-weight:700}
+
+/* ═══════════════════════════════════
+   ZZ DIVIDER BETWEEN SECTIONS
+═══════════════════════════════════ */
+.zz-divider{
+  width:100%;height:30px;display:block;overflow:hidden;
+  background:transparent;
+}
+.zz-divider svg{display:block;width:100%;height:30px}
+
+/* ═══════════════════════════════════
+   TICKER
+═══════════════════════════════════ */
+.ticker{
+  background:var(--coral);
+  padding:.75rem 0;overflow:hidden;
+}
+.ticker-track{
+  display:flex;gap:3rem;white-space:nowrap;
+  animation:tick 32s linear infinite;
+}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.t-item{font-size:.7rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.9)}
+.t-zz{color:rgba(255,255,255,.45);font-size:.8rem}
+
+/* ═══════════════════════════════════
+   SECTION SHARED
+═══════════════════════════════════ */
+.s-eyebrow{
+  font-size:.72rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--coral);margin-bottom:.8rem;
+  display:flex;align-items:center;gap:.7rem;
+}
+.s-eyebrow::before{content:'';display:block;width:24px;height:2px;background:var(--coral)}
+.s-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2.2rem,4vw,3.4rem);
+  font-weight:700;line-height:1.1;letter-spacing:-.02em;
+  color:var(--ink);
+}
+
+/* ═══════════════════════════════════
+   ABOUT
+═══════════════════════════════════ */
+.about{
+  background:var(--off);
+  display:grid;grid-template-columns:1fr 1fr;
+}
+
+.about-left{
+  padding:6rem 4.5rem;
+  border-right:2px solid var(--border);
+}
+.about-body{
+  font-size:1rem;line-height:1.85;color:var(--mid);
+  margin:1.8rem 0;max-width:50ch;font-weight:300;
+}
+.stat-row{
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+  border-top:2px solid var(--ink);margin-top:3rem;
+}
+.stat{padding:2rem 0;border-right:2px solid var(--border)}
+.stat:last-child{border-right:none}
+.stat-num{
+  font-family:'Cormorant Garamond',serif;
+  font-size:4rem;font-weight:700;
+  color:var(--coral);line-height:1;
+}
+.stat-desc{
+  font-size:.7rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--light);margin-top:.3rem;
+}
+
+.about-right{
+  padding:6rem 4.5rem;
+  background:var(--white);
+}
+.speaker-card{
+  border:2px solid var(--ink);
+  padding:2.5rem;
+}
+.spk-eyebrow{
+  font-size:.65rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--coral);margin-bottom:.8rem;
+}
+.spk-name{
+  font-family:'Cormorant Garamond',serif;
+  font-size:2.4rem;font-weight:700;
+  color:var(--ink);margin-bottom:.4rem;line-height:1;
+}
+.spk-role{font-size:.82rem;color:var(--mid);margin-bottom:1.4rem;line-height:1.6;font-weight:300}
+.spk-bio{font-size:.9rem;line-height:1.85;color:var(--mid);font-weight:300}
+.fw-row{margin-top:2rem;padding-top:1.8rem;border-top:1.5px solid var(--border)}
+.fw-label{
+  font-size:.62rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--light);margin-bottom:.8rem;
+}
+.fw-names{display:flex;flex-direction:column;gap:.5rem}
+.fw-name-item{
+  font-size:.8rem;color:var(--ink);font-weight:500;
+  display:flex;align-items:center;gap:.7rem;
+}
+.fw-name-item::before{content:'';display:block;width:18px;height:2px;background:var(--indigo);flex-shrink:0}
+
+/* ═══════════════════════════════════
+   ZIGZAG BAND (full-width pattern strip)
+═══════════════════════════════════ */
+.zzband{
+  background:var(--indigo);
+  padding:2.5rem 0;
+  overflow:hidden;
+  position:relative;
+}
+.zzband svg{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  opacity:.15;
+}
+.zzband-inner{
+  position:relative;z-index:2;
+  display:flex;align-items:center;justify-content:center;
+  gap:3rem;flex-wrap:wrap;padding:0 4rem;
+}
+.zzband-item{
+  font-size:.72rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  color:rgba(255,255,255,.75);
+  display:flex;align-items:center;gap:.6rem;
+}
+.zzband-item::before{
+  content:'◆';color:rgba(232,82,42,.8);font-size:.55rem;
+}
+
+/* ═══════════════════════════════════
+   CURRICULUM
+═══════════════════════════════════ */
+.learn{
+  padding:6rem 4.5rem;
+  background:var(--white);
+}
+.learn-header{
+  display:grid;grid-template-columns:1fr 1fr;gap:3rem;
+  align-items:end;margin-bottom:4rem;
+}
+.learn-header p{
+  font-size:.95rem;line-height:1.8;color:var(--mid);font-weight:300;
+}
+.learn-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:0;border-top:2px solid var(--ink);border-left:2px solid var(--ink);
+}
+.lc{
+  padding:2.5rem 2rem;
+  border-right:2px solid var(--ink);border-bottom:2px solid var(--ink);
+  position:relative;overflow:hidden;
+  transition:background .25s;
+}
+.lc:hover{background:var(--pale)}
+.lc-accent{
+  position:absolute;top:0;left:0;right:0;height:4px;
+  background:var(--coral);
+}
+.lc-num{
+  font-family:'Cormorant Garamond',serif;
+  font-size:4.5rem;font-weight:700;
+  color:var(--border);position:absolute;
+  bottom:-.8rem;right:.8rem;line-height:1;
+  pointer-events:none;user-select:none;
+}
+.lc-icon{font-size:1.8rem;margin-bottom:1rem;display:block;line-height:1}
+.lc-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.35rem;font-weight:700;
+  margin-bottom:.8rem;line-height:1.2;color:var(--ink);
+}
+.lc-desc{font-size:.85rem;line-height:1.75;color:var(--mid);font-weight:300}
+.lc-tags{margin-top:1.2rem;display:flex;flex-wrap:wrap;gap:.4rem}
+.lc-tag{
+  font-size:.6rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;
+  padding:.22rem .6rem;
+  border:1.5px solid var(--border);color:var(--light);
+}
+.lc-tag.hi{border-color:rgba(45,58,140,.3);color:var(--indigo);background:rgba(45,58,140,.05)}
+
+/* ═══════════════════════════════════
+   SCREENSHOTS
+═══════════════════════════════════ */
+.screenshots{
+  padding:6rem 4.5rem;
+  background:var(--pale);
+}
+.ss-header{margin-bottom:3.5rem}
+.ss-header p{font-size:.95rem;color:var(--mid);line-height:1.8;margin-top:1rem;max-width:54ch;font-weight:300}
+.gallery{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:2px;
+  border:2px solid var(--ink);
+}
+.gi{
+  overflow:hidden;position:relative;background:var(--white);
+  transition:opacity .25s;
+}
+.gi:hover{opacity:.9}
+.gi.wide{grid-column:span 2}
+.gi img{width:100%;height:100%;object-fit:cover;display:block}
+.gi-cap{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(transparent,rgba(26,26,26,.8));
+  padding:.7rem 1rem .65rem;
+  font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(255,255,255,.85);
+}
+
+/* ═══════════════════════════════════
+   AGENDA
+═══════════════════════════════════ */
+.agenda{background:var(--white)}
+.agenda-header{
+  padding:6rem 4.5rem 3rem;
+  display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:end;
+  border-bottom:2px solid var(--ink);
+}
+.agenda-header p{font-size:.95rem;line-height:1.8;color:var(--mid);font-weight:300}
+.agenda-days{display:grid;grid-template-columns:1fr 1fr}
+.ag-day{
+  padding:4rem 4.5rem;
+  border-right:2px solid var(--ink);
+}
+.ag-day:last-child{border-right:none}
+.day-tag{
+  display:inline-block;margin-bottom:1rem;
+  font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  padding:.3rem .85rem;
+  background:var(--indigo);color:var(--white);
+}
+.day-title{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.9rem;font-weight:700;
+  color:var(--ink);margin-bottom:.4rem;
+}
+.day-focus{font-size:.78rem;color:var(--light);margin-bottom:2.5rem;line-height:1.5;font-weight:400}
+.ag-item{
+  display:flex;gap:1.2rem;
+  padding:1.2rem 0;
+  border-top:1.5px solid var(--border);
+}
+.ag-item:first-of-type{border-top:none}
+.ag-dot{
+  width:8px;height:8px;flex-shrink:0;
+  border:2px solid var(--coral);margin-top:.35rem;
+  background:transparent;
+  transform:rotate(45deg);
+}
+.ag-topic{
+  font-size:.9rem;font-weight:600;color:var(--ink);margin-bottom:.25rem;
+}
+.ag-detail{font-size:.78rem;color:var(--mid);line-height:1.55;font-weight:300}
+.lab-box{
+  margin-top:2.5rem;
+  border-left:4px solid var(--coral);
+  padding:1.4rem 1.6rem;
+  background:var(--off);
+}
+.lab-ey{
+  font-size:.6rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--coral);margin-bottom:.5rem;
+}
+.lab-name{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.15rem;font-weight:700;color:var(--ink);
+}
+.lab-desc{font-size:.78rem;color:var(--mid);margin-top:.4rem;line-height:1.6;font-weight:300}
+
+/* ═══════════════════════════════════
+   ZIGZAG SECTION BREAK — CORAL
+═══════════════════════════════════ */
+.zz-section{
+  position:relative;height:50px;overflow:hidden;
+  background:var(--pale);
+}
+.zz-section::after{
+  content:'';
+  position:absolute;bottom:0;left:0;right:0;
+  height:50px;
+  background:var(--white);
+  clip-path:polygon(0 100%, 0 50%, 2% 0, 4% 50%, 6% 0, 8% 50%, 10% 0, 12% 50%, 14% 0, 16% 50%, 18% 0, 20% 50%, 22% 0, 24% 50%, 26% 0, 28% 50%, 30% 0, 32% 50%, 34% 0, 36% 50%, 38% 0, 40% 50%, 42% 0, 44% 50%, 46% 0, 48% 50%, 50% 0, 52% 50%, 54% 0, 56% 50%, 58% 0, 60% 50%, 62% 0, 64% 50%, 66% 0, 68% 50%, 70% 0, 72% 50%, 74% 0, 76% 50%, 78% 0, 80% 50%, 82% 0, 84% 50%, 86% 0, 88% 50%, 90% 0, 92% 50%, 94% 0, 96% 50%, 98% 0, 100% 50%, 100% 100%);
+}
+
+/* ═══════════════════════════════════
+   BOOK
+═══════════════════════════════════ */
+.book-sec{
+  background:var(--off);
+  display:grid;grid-template-columns:1fr 1fr;
+  border-top:2px solid var(--ink);
+}
+.book-left{
+  padding:6rem 4.5rem;
+  border-right:2px solid var(--ink);
+}
+.book-desc{
+  font-size:.95rem;line-height:1.9;color:var(--mid);
+  margin:1.8rem 0;max-width:52ch;font-weight:300;
+}
+.book-meta{display:flex;flex-direction:column;border-top:2px solid var(--ink);margin-top:2rem}
+.bm-row{
+  display:flex;justify-content:space-between;align-items:baseline;
+  padding:.9rem 0;border-bottom:1.5px solid var(--border);
+}
+.bm-label{font-size:.65rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--light)}
+.bm-val{font-size:.88rem;font-weight:500;color:var(--ink)}
+.bm-val.hi{color:var(--coral);font-weight:600}
+.book-link{
+  display:inline-flex;align-items:center;gap:.5rem;
+  margin-top:2rem;
+  font-size:.75rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--coral);text-decoration:none;
+  border-bottom:2px solid var(--coral);padding-bottom:2px;
+  transition:opacity .2s;
+}
+.book-link:hover{opacity:.7}
+.book-link::after{content:'→'}
+
+.book-right{
+  padding:6rem 4.5rem;
+  background:var(--white);
+  display:flex;flex-direction:column;
+  justify-content:center;align-items:center;
+}
+.book-3d{
+  filter:drop-shadow(8px 16px 48px rgba(45,58,140,.2));
+  transition:transform .4s cubic-bezier(.2,.8,.2,1);
+}
+.book-3d:hover{transform:rotate(-2deg) translateY(-6px) scale(1.02)}
+.book-3d img{width:250px;display:block}
+.book-note{
+  font-size:.75rem;color:var(--mid);text-align:center;
+  margin-top:1.5rem;line-height:1.7;font-weight:300;
+}
+.book-note strong{color:var(--coral);font-weight:600}
+
+/* ═══════════════════════════════════
+   FOREWORDS
+═══════════════════════════════════ */
+.forewords{
+  padding:6rem 4.5rem;
+  background:var(--indigo);
+  position:relative;overflow:hidden;
+}
+
+/* zigzag watermark behind forewords */
+.forewords::before{
+  content:'';position:absolute;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='18'%3E%3Cpolyline points='0,18 15,3 30,18 45,3 60,18' fill='none' stroke='rgba(255,255,255,0.05)' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat:repeat;
+}
+
+.forewords .s-eyebrow{color:rgba(255,255,255,.5)}
+.forewords .s-eyebrow::before{background:rgba(255,255,255,.4)}
+.forewords .s-title{color:var(--white)}
+.fw-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-top:3.5rem}
+.fw-card{
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.1);
+  padding:3rem;
+  position:relative;overflow:hidden;
+  transition:background .25s;
+}
+.fw-card:hover{background:rgba(255,255,255,.08)}
+.fw-open-quote{
+  font-family:'Cormorant Garamond',serif;
+  font-size:8rem;font-style:italic;font-weight:700;
+  color:rgba(232,82,42,.25);
+  position:absolute;top:-1rem;left:1.5rem;
+  line-height:1;pointer-events:none;
+}
+.fw-text{
+  font-family:'Cormorant Garamond',serif;
+  font-style:italic;font-size:1.05rem;line-height:1.85;
+  color:rgba(255,255,255,.7);
+  margin-bottom:2rem;position:relative;z-index:1;
+}
+.fw-sig{border-top:1px solid rgba(255,255,255,.1);padding-top:1.2rem}
+.fw-sig-name{
+  font-size:1rem;font-weight:600;color:var(--white);
+  font-family:'Cormorant Garamond',serif;font-style:normal;font-size:1.2rem;
+}
+.fw-sig-role{font-size:.7rem;color:rgba(255,255,255,.4);margin-top:.2rem;letter-spacing:.04em;line-height:1.5}
+
+/* ═══════════════════════════════════
+   FOOTER
+═══════════════════════════════════ */
+footer{
+  background:var(--ink);
+  padding:1.8rem 4rem;
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:.68rem;font-weight:500;letter-spacing:.06em;color:rgba(255,255,255,.3);
+}
+footer a{color:rgba(255,255,255,.3);text-decoration:none;transition:color .2s}
+footer a:hover{color:var(--coral)}
+
+/* ═══════════════════════════════════
+   REVEAL
+═══════════════════════════════════ */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .65s ease,transform .65s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ═══════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════ */
+@media(max-width:960px){
+  nav{padding:1rem 1.5rem}
+  .nav-links{display:none}
+  .hero{grid-template-columns:1fr}
+  .hero-right{min-height:50vh}
+  .hero-left{padding:3rem 2rem}
+  .about{grid-template-columns:1fr}
+  .about-left{border-right:none}
+  .about-right{padding:3rem 2rem}
+  .learn{padding:4rem 2rem}
+  .learn-grid{grid-template-columns:1fr 1fr}
+  .screenshots{padding:4rem 2rem}
+  .gallery{grid-template-columns:1fr 1fr}
+  .gi.wide{grid-column:span 2}
+  .agenda-header{grid-template-columns:1fr}
+  .agenda-days{grid-template-columns:1fr}
+  .ag-day{border-right:none;border-bottom:2px solid var(--ink)}
+  .ag-day:last-child{border-bottom:none}
+  .book-sec{grid-template-columns:1fr}
+  .book-left{border-right:none}
+  .forewords{padding:4rem 2rem}
+  .fw-grid{grid-template-columns:1fr}
+  footer{flex-direction:column;gap:.5rem;text-align:center;padding:1.5rem 2rem}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Applied Math <span>×</span> F#</div>
+  <div class="nav-links">
+    <a href="#about">Speaker</a>
+    <a href="#learn">Curriculum</a>
+    <a href="#gallery">Visuals</a>
+    <a href="#agenda">Agenda</a>
+    <a href="#book">Book</a>
+  </div>
+  <div class="nav-pill">Workshop Proposal</div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="proposal-tag">NDC Conference · Workshop Proposal</div>
+    <h1>
+      <span class="block">Applied</span>
+      <span class="italic">Mathematics</span>
+      <span class="block">with F<span style="color:var(--coral)">#</span></span>
+    </h1>
+    <p class="hero-desc">
+      .NET's best-kept secret meets production-grade engineering.
+      A 2-day deep-dive bridging academic theory and real-world simulation —
+      from linear algebra to bungee-jump physics.
+    </p>
+    <div class="hero-pills">
+      <div class="hp">2 Days · Full Immersion</div>
+      <div class="hp coral">Signed Springer Hardcover — Every Attendee</div>
+      <div class="hp indigo">Forewords by Don Syme &amp; John Azariah</div>
+      <div class="hp">4+ Hands-On Labs</div>
+    </div>
+    <a href="#agenda" class="hero-cta">Explore the Agenda</a>
+  </div>
+
+  <div class="hero-right">
+    <div class="hero-topics">
+      <div class="ht-row">
+        <div class="ht-num">Ch.1</div>
+        <div class="ht-name">F# Collections &amp; Linear Algebra</div>
+        <div class="ht-tags"><span class="ht-tag">Vectors</span><span class="ht-tag">Matrices</span></div>
+      </div>
+      <div class="ht-row">
+        <div class="ht-num">Ch.2</div>
+        <div class="ht-name">Descriptive Statistics</div>
+        <div class="ht-tags"><span class="ht-tag hi">KDE</span><span class="ht-tag">Distributions</span></div>
+      </div>
+      <div class="ht-row">
+        <div class="ht-num">Ch.3</div>
+        <div class="ht-name">Set Theory &amp; Probability</div>
+        <div class="ht-tags"><span class="ht-tag">Binomial</span><span class="ht-tag">Poisson</span><span class="ht-tag">Normal</span></div>
+      </div>
+      <div class="ht-row">
+        <div class="ht-num">Ch.4</div>
+        <div class="ht-name">Numerical Integration</div>
+        <div class="ht-tags"><span class="ht-tag hi">Gaussian Quadrature</span><span class="ht-tag">Simpson</span></div>
+      </div>
+      <div class="ht-row">
+        <div class="ht-num">Ch.5</div>
+        <div class="ht-name">ODE Solving</div>
+        <div class="ht-tags"><span class="ht-tag hi">Runge–Kutta</span><span class="ht-tag">Phase Portraits</span></div>
+      </div>
+      <div class="ht-row">
+        <div class="ht-num">Ch.6</div>
+        <div class="ht-name">Symbolic Mathematics</div>
+        <div class="ht-tags"><span class="ht-tag hi">AngouriMath</span><span class="ht-tag">Auto-diff</span></div>
+      </div>
+      <div class="ht-row">
+        <div class="ht-num">Ch.7</div>
+        <div class="ht-name">Visualization</div>
+        <div class="ht-tags"><span class="ht-tag hi">Plotly.NET</span><span class="ht-tag">Heatmaps</span></div>
+      </div>
+      <div class="ht-row">
+        <div class="ht-num">Labs</div>
+        <div class="ht-name">Real-World Case Studies</div>
+        <div class="ht-tags"><span class="ht-tag hi">Soccer</span><span class="ht-tag hi">Housing</span><span class="ht-tag hi">Bungee</span><span class="ht-tag hi">Ecology</span></div>
+      </div>
+    </div>
+
+    <div class="hero-book-card">
+      <img src="https://m.media-amazon.com/images/I/51K7G1wDX1L._SY522_.jpg"
+           alt="Applied Mathematics with F# book cover"
+           onerror="this.style.display='none'"/>
+      <div class="hbc-text">
+        <div class="hbc-eyebrow">Exclusive Attendee Bonus</div>
+        <div class="hbc-title">Applied Mathematics with F#</div>
+        <div class="hbc-pub">Sudipta Mukherjee · Springer, November 2025</div>
+        <div class="hbc-dots">
+          <div class="hbc-dot">Signed hardcover for every attendee</div>
+          <div class="hbc-dot">Foreword by Don Syme, creator of F#</div>
+          <div class="hbc-dot">Foreword by John Azariah, Microsoft</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-track">
+    <span class="t-item">Runge–Kutta</span><span class="t-zz"> ⟋⟋ </span>
+    <span class="t-item">Gaussian Quadrature</span><span class="t-zz"> ⟋⟋ </span>
+    <span class="t-item">AngouriMath</span><span class="t-zz"> ⟋⟋ </span>
+    <span class="t-item">Plotly.NET</span><span class="t-zz"> ⟋⟋ </span>
+    <span class="t-item">Soccer Analytics</span><span class="t-zz"> ⟋⟋ </span>
+    <span class="t-item">Housing Price Model</span><span class="t-zz"> ⟋⟋ </span>
+    <span class="t-item">Bungee Jump Physics</span><span class="t-zz"> ⟋⟋ </span>
+    <span class="t-item">Predator–Prey Dynamics</span><span class="t-zz"> ⟋⟋ </span>
+    <span class="t-item">Symbolic Differentiation</span><span class="t-zz"> ⟋⟋ </span>
+    <span class="t-item">Phase Portraits</span><span class="t-zz"> ⟋⟋ </span>
+    <span class="t-item">Credit Scoring</span><span class="t-zz"> ⟋⟋ </span>
+    <span class="t-item">Runge–Kutta</span><span class="t-zz"> ⟋⟋ </span>
+    <span class="t-item">Gaussian Quadrature</span><span class="t-zz"> ⟋⟋ </span>
+    <span class="t-item">AngouriMath</span><span class="t-zz"> ⟋⟋ </span>
+    <span class="t-item">Plotly.NET</span><span class="t-zz"> ⟋⟋ </span>
+    <span class="t-item">Soccer Analytics</span><span class="t-zz"> ⟋⟋ </span>
+    <span class="t-item">Housing Price Model</span><span class="t-zz"> ⟋⟋ </span>
+    <span class="t-item">Bungee Jump Physics</span><span class="t-zz"> ⟋⟋ </span>
+    <span class="t-item">Predator–Prey Dynamics</span><span class="t-zz"> ⟋⟋ </span>
+    <span class="t-item">Symbolic Differentiation</span><span class="t-zz"> ⟋⟋ </span>
+    <span class="t-item">Phase Portraits</span><span class="t-zz"> ⟋⟋ </span>
+    <span class="t-item">Credit Scoring</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-left reveal">
+    <div class="s-eyebrow">The Proposal</div>
+    <h2 class="s-title">Where Math<br/>Meets the Machine</h2>
+    <p class="about-body">
+      While Python dominates data science headlines, .NET developers have a quiet, powerful secret: <strong>F#</strong>.
+      This intensive two-day workshop bridges the chasm between academic mathematics and production-grade engineering.
+    </p>
+    <p class="about-body">
+      Attendees master translating mathematical specifications into elegant, type-safe F# code —
+      covering linear algebra, statistics, probability, calculus, symbolic differentiation, and
+      numerical simulation. Every concept is grounded in real case studies: soccer analytics,
+      housing price models, bungee physics, predator–prey ecosystems, and credit scoring.
+    </p>
+    <div class="stat-row">
+      <div class="stat" style="padding-right:2.5rem">
+        <div class="stat-num">2</div>
+        <div class="stat-desc">Full Days</div>
+      </div>
+      <div class="stat" style="padding:0 2.5rem">
+        <div class="stat-num">4+</div>
+        <div class="stat-desc">Live Labs</div>
+      </div>
+      <div class="stat" style="padding-left:2.5rem">
+        <div class="stat-num">1</div>
+        <div class="stat-desc">Signed Book</div>
+      </div>
+    </div>
+  </div>
+  <div class="about-right reveal">
+    <div class="s-eyebrow">Your Instructor</div>
+    <div class="speaker-card">
+      <div class="spk-eyebrow">Author · Workshop Lead · Applied Math Practitioner</div>
+      <div class="spk-name">Sudipta Mukherjee</div>
+      <div class="spk-role">
+        Author of <em>Applied Mathematics with F#</em> (Springer, November 2025)<br/>
+        Senior Software Engineer &amp; Scientific Computing Specialist
+      </div>
+      <p class="spk-bio">
+        Sudipta brings deep expertise in functional programming, numerical methods, and scientific
+        computing on the .NET platform. His Springer publication — endorsed by the creator of F# himself —
+        distils years of knowledge at the intersection of mathematics and production software engineering.
+        This workshop delivers that knowledge live, hands-on, with real code attendees can immediately put to use.
+      </p>
+      <div class="fw-row">
+        <div class="fw-label">Forewords written by</div>
+        <div class="fw-names">
+          <div class="fw-name-item">Don Syme — Creator of F#, Principal Researcher, Microsoft Research</div>
+          <div class="fw-name-item">John Azariah — Principal Engineer, Microsoft Corporation</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ZIGZAG BAND -->
+<div class="zzband">
+  <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" preserveAspectRatio="none">
+    <defs>
+      <pattern id="zp" x="0" y="0" width="80" height="24" patternUnits="userSpaceOnUse">
+        <polyline points="0,24 20,4 40,24 60,4 80,24" fill="none" stroke="white" stroke-width="2"/>
+      </pattern>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#zp)"/>
+  </svg>
+  <div class="zzband-inner">
+    <div class="zzband-item">Runge–Kutta ODE Solving</div>
+    <div class="zzband-item">Gaussian Quadrature</div>
+    <div class="zzband-item">Symbolic Differentiation</div>
+    <div class="zzband-item">Plotly.NET Charts</div>
+    <div class="zzband-item">Phase Portraits</div>
+    <div class="zzband-item">Vector Fields</div>
+    <div class="zzband-item">AngouriMath</div>
+  </div>
+</div>
+
+<!-- CURRICULUM -->
+<section class="learn" id="learn">
+  <div class="learn-header reveal">
+    <div>
+      <div class="s-eyebrow">Curriculum</div>
+      <h2 class="s-title">What Attendees<br/>Walk Away With</h2>
+    </div>
+    <p>Confident to apply F# and state-of-the-art symbolic math frameworks to solve mathematical problems across any engineering domain.</p>
+  </div>
+  <div class="learn-grid reveal">
+    <div class="lc">
+      <div class="lc-accent"></div>
+      <div class="lc-num">01</div>
+      <span class="lc-icon">⚙</span>
+      <div class="lc-title">Math-to-Code Pipeline</div>
+      <p class="lc-desc">Translate mathematical specifications into idiomatic, type-safe F# code. Master patterns that make complex equations readable and maintainable.</p>
+      <div class="lc-tags"><span class="lc-tag hi">Type Safety</span><span class="lc-tag">Composition</span></div>
+    </div>
+    <div class="lc">
+      <div class="lc-accent" style="background:var(--indigo)"></div>
+      <div class="lc-num">02</div>
+      <span class="lc-icon">∂</span>
+      <div class="lc-title">Numerical Mastery</div>
+      <p class="lc-desc">Runge-Kutta, Gaussian quadrature, Simpson's rule — blended with symbolic computation via AngouriMath and Math.NET.</p>
+      <div class="lc-tags"><span class="lc-tag hi">Runge–Kutta</span><span class="lc-tag hi">AngouriMath</span></div>
+    </div>
+    <div class="lc">
+      <div class="lc-accent" style="background:var(--sage)"></div>
+      <div class="lc-num">03</div>
+      <span class="lc-icon">◈</span>
+      <div class="lc-title">Scientific Visualization</div>
+      <p class="lc-desc">Interactive heatmaps, vector fields, Jacobians, probability distributions, KDEs, and phase plots via Plotly.NET — live from F# script.</p>
+      <div class="lc-tags"><span class="lc-tag hi">Plotly.NET</span><span class="lc-tag">Phase Plots</span></div>
+    </div>
+    <div class="lc">
+      <div class="lc-accent" style="background:var(--gold)"></div>
+      <div class="lc-num">04</div>
+      <span class="lc-icon">∿</span>
+      <div class="lc-title">Real-World Case Studies</div>
+      <p class="lc-desc">Soccer analytics, housing price modelling, bungee jump physics, predator–prey dynamics, credit scoring — real problems, real .NET code.</p>
+      <div class="lc-tags"><span class="lc-tag hi">ODEs</span><span class="lc-tag hi">Simulation</span><span class="lc-tag">Finance</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ZZ SECTION BREAK -->
+<div class="zz-section"></div>
+
+<!-- SCREENSHOTS -->
+<section class="screenshots" id="gallery">
+  <div class="ss-header reveal">
+    <div class="s-eyebrow">From the Book — Live in the Workshop</div>
+    <h2 class="s-title">Plotly.NET in Action</h2>
+    <p>Every chart is produced live during the workshop directly from F# code — interactive, publication-quality, taken from the book's actual case studies.</p>
+  </div>
+  <div class="gallery reveal">
+    <div class="gi wide" style="height:300px">
+      <img src="plotly2.png" alt="Soccer analytics heatmap"/>
+      <div class="gi-cap">Soccer Analytics · Player Movement Heatmap Q1–Q6</div>
+    </div>
+    <div class="gi" style="height:300px">
+      <img src="plotly3.png" alt="Correlation matrix"/>
+      <div class="gi-cap">Housing Model · Feature Correlation Matrix</div>
+    </div>
+    <div class="gi" style="height:250px">
+      <img src="plotly1.png" alt="3D scatter"/>
+      <div class="gi-cap">Soccer · 3D Athlete Performance Scatter</div>
+    </div>
+    <div class="gi" style="height:250px">
+      <img src="plotly5.png" alt="3D surface"/>
+      <div class="gi-cap">Calculus · 3D Surface Visualization</div>
+    </div>
+    <div class="gi" style="height:250px">
+      <img src="plotly6.png" alt="Venn diagram"/>
+      <div class="gi-cap">Set Theory · Venn Diagram</div>
+    </div>
+  </div>
+</section>
+
+<!-- AGENDA -->
+<section class="agenda" id="agenda">
+  <div class="agenda-header reveal">
+    <div>
+      <div class="s-eyebrow">2-Day Agenda</div>
+      <h2 class="s-title">From Foundations<br/>to Full Simulation</h2>
+    </div>
+    <p>Theory in the morning. Code in the afternoon. Real case studies by end of day — every day.</p>
+  </div>
+  <div class="agenda-days">
+    <div class="ag-day reveal">
+      <div class="day-tag">Day One</div>
+      <div class="day-title">Foundations &amp; Analytics</div>
+      <div class="day-focus">Linear algebra · Statistics · Distributions · Set theory</div>
+      <div class="ag-item">
+        <div class="ag-dot"></div>
+        <div><div class="ag-topic">F# Collections &amp; Functional Patterns</div><div class="ag-detail">Lists, arrays, sequences, maps — mapped to mathematical structures naturally.</div></div>
+      </div>
+      <div class="ag-item">
+        <div class="ag-dot"></div>
+        <div><div class="ag-topic">Vectors, Matrices &amp; Linear Algebra</div><div class="ag-detail">Dot products, transformations, Jacobians in idiomatic F#.</div></div>
+      </div>
+      <div class="ag-item">
+        <div class="ag-dot"></div>
+        <div><div class="ag-topic">Descriptive Statistics &amp; Probability</div><div class="ag-detail">KDEs, normal, Poisson and binomial distributions.</div></div>
+      </div>
+      <div class="ag-item">
+        <div class="ag-dot"></div>
+        <div><div class="ag-topic">Interactive Visualization with Plotly.NET</div><div class="ag-detail">Heatmaps, scatter plots, vector fields, Venn diagrams live.</div></div>
+      </div>
+      <div class="lab-box">
+        <div class="lab-ey">◈ Capstone Lab — Day 1</div>
+        <div class="lab-name">Soccer Player Analytics Dashboard</div>
+        <div class="lab-desc">Build a real pipeline modelling athlete performance with linear algebra, statistics, and Plotly.NET heatmaps.</div>
+      </div>
+    </div>
+    <div class="ag-day reveal">
+      <div class="day-tag">Day Two</div>
+      <div class="day-title">Calculus &amp; Simulation</div>
+      <div class="day-focus">Numerical integration · ODE solving · Symbolic differentiation</div>
+      <div class="ag-item">
+        <div class="ag-dot"></div>
+        <div><div class="ag-topic">Numerical Integration</div><div class="ag-detail">Trapezoidal, Simpson's, Gaussian quadrature — from theory to working code.</div></div>
+      </div>
+      <div class="ag-item">
+        <div class="ag-dot"></div>
+        <div><div class="ag-topic">ODEs with Runge–Kutta</div><div class="ag-detail">RK4 from scratch, stiff systems, phase portraits, stability.</div></div>
+      </div>
+      <div class="ag-item">
+        <div class="ag-dot"></div>
+        <div><div class="ag-topic">Symbolic Math with AngouriMath</div><div class="ag-detail">Auto-differentiation, simplification, blending symbolic and numerical.</div></div>
+      </div>
+      <div class="ag-item">
+        <div class="ag-dot"></div>
+        <div><div class="ag-topic">Predator–Prey Ecosystem Dynamics</div><div class="ag-detail">Lotka-Volterra equations, phase-plane portrait, long-term stability.</div></div>
+      </div>
+      <div class="lab-box">
+        <div class="lab-ey">◈ Capstone Labs — Day 2</div>
+        <div class="lab-name">Housing Price Model &amp; Bungee Jump Simulator</div>
+        <div class="lab-desc">Finance-ready regression model + bungee free-fall physics using your own RK4 solver.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ZZ SECTION BREAK -->
+<div class="zz-section" style="background:var(--white)"></div>
+
+<!-- BOOK -->
+<section class="book-sec" id="book">
+  <div class="book-left reveal">
+    <div class="s-eyebrow">The Book Behind the Workshop</div>
+    <h2 class="s-title">Applied Mathematics<br/>with F#</h2>
+    <p class="book-desc">
+      This workshop is drawn directly from the Springer publication by Sudipta Mukherjee (November 2025).
+      The book highlights the enormous potential of F# in scientific computing — presenting solutions to
+      diverse real-life problems through applied mathematics and functional programming.
+    </p>
+    <p class="book-desc">
+      It covers F# collections, vectors, matrices, descriptive statistics, set theory, probability,
+      and calculus — using Plotly.NET for interactive visualisation, AngouriMath for symbolic
+      differentiation, and Math.NET for numerical computation.
+    </p>
+    <div class="book-meta">
+      <div class="bm-row"><span class="bm-label">Publisher</span><span class="bm-val">Springer</span></div>
+      <div class="bm-row"><span class="bm-label">Published</span><span class="bm-val">2 November 2025</span></div>
+      <div class="bm-row"><span class="bm-label">Author</span><span class="bm-val">Sudipta Mukherjee</span></div>
+      <div class="bm-row"><span class="bm-label">Bonus</span><span class="bm-val hi">Signed hardcover — every attendee</span></div>
+    </div>
+    <a class="book-link" href="https://www.amazon.com/Applied-Mathematics-F-Sudipta-Mukherjee/dp/981969633X" target="_blank" rel="noopener">View on Amazon</a>
+  </div>
+  <div class="book-right">
+    <div class="book-3d reveal">
+      <img src="https://m.media-amazon.com/images/I/51K7G1wDX1L._SY522_.jpg" alt="Book cover"/>
+    </div>
+    <p class="book-note"><strong>Every workshop attendee</strong> receives<br/>a personally signed hardcover copy.</p>
+  </div>
+</section>
+
+<!-- FOREWORDS -->
+<section class="forewords" id="forewords">
+  <div class="reveal">
+    <div class="s-eyebrow">From the Book's Forewords</div>
+    <h2 class="s-title">Written by the People<br/>Who Built F#</h2>
+  </div>
+  <div class="fw-grid">
+    <div class="fw-card reveal">
+      <div class="fw-open-quote">"</div>
+      <p class="fw-text">"F# stands at the intersection of functional programming, computational mathematics, and computational logic. Its strong type system and concise syntax make it an excellent choice for mathematical computations, from linear algebra to differential equations. This wonderful book provides a practical guide to leveraging these principles, helping you write cleaner and more maintainable mathematical code… I hope this book inspires you to embrace functional-first programming and unlock the full potential of F#."</p>
+      <div class="fw-sig">
+        <div class="fw-sig-name">Don Syme</div>
+        <div class="fw-sig-role">Creator of F# · Principal Researcher, Microsoft Research · Richmond, London, 2025</div>
+      </div>
+    </div>
+    <div class="fw-card reveal">
+      <div class="fw-open-quote">"</div>
+      <p class="fw-text">"F# for Applied Math takes readers on an illuminating journey, bridging the gap between mathematics and computation… Leveraging powerful libraries such as Plotly.NET, Math.NET, and AngouriMath, you will create vivid visualizations, conduct thorough statistical analyses, elegantly manipulate vectors and matrices, and symbolically solve equations — capturing the beauty of mathematics directly in code. More than instructional, this book aims to be transformative."</p>
+      <div class="fw-sig">
+        <div class="fw-sig-name">John Azariah</div>
+        <div class="fw-sig-role">Principal Engineer, Microsoft Corporation · Brisbane, 2025</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>Workshop Proposal · Sudipta Mukherjee · <em>Applied Mathematics with F#</em> · NDC Conference</div>
+  <div style="display:flex;gap:2rem">
+    <a href="https://www.amazon.com/Applied-Mathematics-F-Sudipta-Mukherjee/dp/981969633X" target="_blank" rel="noopener">Amazon</a>
+    <a href="https://ndcconferences.com" target="_blank" rel="noopener">NDC Conferences</a>
+  </div>
+</footer>
+
+<script>
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:0.08});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+document.querySelectorAll('.learn-grid,.fw-grid,.agenda-days,.gallery').forEach(grid=>{
+  grid.querySelectorAll('.reveal,.lc,.fw-card,.ag-day,.gi').forEach((el,i)=>{
+    el.style.transitionDelay = (i*.1)+'s';
+  });
+});
+</script>
+
+</body>
+</html>
